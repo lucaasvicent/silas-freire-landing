@@ -1,68 +1,109 @@
-# Silas Freire Advocacia — Landing Page
+<div align="center">
 
-Landing page profissional desenvolvida em Next.js 14 (App Router) + TypeScript + Tailwind CSS, com base no Blueprint estratégico definido previamente.
+# ⚖️ Silas Freire Advocacia
 
-## Como rodar o projeto
+### Landing page institucional para escritório de advocacia em Guarulhos-SP
+
+[![Deploy](https://img.shields.io/badge/deploy-vercel-black?logo=vercel)](https://silas-freire-landing.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
+
+**[🔗 Ver demo ao vivo](https://silas-freire-landing.vercel.app/)**
+
+</div>
+
+---
+
+## Sobre o projeto
+
+Landing page desenvolvida para a **Silas Freire Advocacia**, escritório individual de advocacia em Guarulhos-SP, com atuação em Direito do Trabalho, Direito Criminal, Pensão Alimentícia e Consultoria Jurídica.
+
+O objetivo principal da página é converter visitantes em contato direto via WhatsApp, apoiado em prova social real (nota 5,0 no Google com 68 avaliações) e em uma identidade visual sóbria e tradicional, coerente com o segmento jurídico.
+
+O projeto nasceu de um processo de 3 etapas — análise estratégica do negócio → blueprint de conversão e copy → desenvolvimento — em vez de partir direto para o código. Isso está refletido na forma como o conteúdo foi escrito: nenhuma informação (avaliação, nota, preço, tempo de experiência) foi inventada; tudo o que não pôde ser confirmado nos materiais originais do cliente foi marcado explicitamente no código como pendência.
+
+## Demonstração
+
+🔗 **[silas-freire-landing.vercel.app](https://silas-freire-landing.vercel.app/)**
+
+## Stack utilizada
+
+| Camada | Tecnologia |
+|---|---|
+| Framework | [Next.js 14](https://nextjs.org/) (App Router) |
+| Linguagem | [TypeScript](https://www.typescriptlang.org/) |
+| Estilização | [Tailwind CSS](https://tailwindcss.com/) |
+| Ícones | [Lucide React](https://lucide.dev/) |
+| Animação | [Framer Motion](https://www.framer.com/motion/) |
+| Deploy | [Vercel](https://vercel.com/) |
+
+## Funcionalidades
+
+- Botão de WhatsApp com link `wa.me` e mensagem pré-preenchida diferente por seção (hero, serviços, CTA final)
+- Botão flutuante de WhatsApp fixo no mobile
+- Seção de FAQ em acordeão, acessível via teclado (`aria-expanded`, `aria-controls`)
+- Menu mobile responsivo com navegação por âncoras
+- SEO configurado: `metadata`, Open Graph, `robots.ts` e `sitemap.ts` gerados automaticamente pelo App Router
+- Foco visível customizado e suporte a `prefers-reduced-motion` para acessibilidade
+- Conteúdo centralizado em `lib/site-data.ts` — telefone, endereço, serviços, depoimentos e FAQ ficam em um único arquivo, sem strings espalhadas pelos componentes
+
+## Rodando localmente
+
+Pré-requisito: [Node.js](https://nodejs.org/) 18 ou superior.
 
 ```bash
+git clone https://github.com/<seu-usuario>/silas-freire-landing.git
+cd silas-freire-landing
 npm install
 npm run dev
 ```
 
-Acesse http://localhost:3000
+Acesse [http://localhost:3000](http://localhost:3000)
 
-## Build de produção
+> O `next/font/google` baixa as fontes (Fraunces e Work Sans) durante o `npm run build`/`npm run dev` — é necessário ter internet ativa nesse momento. Depois de compiladas, as fontes ficam self-hosted, sem chamada externa em runtime.
 
-```bash
-npm run build
-npm start
-```
-
-> Importante: o build baixa as fontes Fraunces e Work Sans diretamente do Google Fonts durante a compilação (via `next/font/google`), então é necessário ter acesso à internet no momento do `npm run build`. Depois de compiladas, as fontes ficam self-hosted — não há chamada externa em tempo de execução.
-
-## Estrutura
+## Estrutura do projeto
 
 ```
 app/
-  layout.tsx      → fontes, metadata e SEO globais
-  page.tsx        → composição da página
-  globals.css     → estilos base, foco visível, reduced motion
-  robots.ts       → robots.txt gerado
-  sitemap.ts      → sitemap.xml gerado
+├── layout.tsx        → fontes, metadata e SEO globais
+├── page.tsx          → composição da página
+├── globals.css       → estilos base, foco visível, reduced motion
+├── robots.ts         → robots.txt gerado
+└── sitemap.ts        → sitemap.xml gerado
+
 components/
-  Header.tsx
-  Hero.tsx
-  About.tsx
-  Services.tsx
-  Differentials.tsx
-  Process.tsx
-  SocialProof.tsx
-  Faq.tsx
-  FinalCta.tsx
-  Footer.tsx
-  FloatingWhatsapp.tsx
-  CtaButton.tsx
-  RatingBadge.tsx
-  ImagePlaceholder.tsx
-  WhatsappIcon.tsx
+├── Header.tsx             → navegação + CTA fixo
+├── Hero.tsx                → seção de abertura com animação de entrada
+├── About.tsx                → apresentação do advogado
+├── Services.tsx              → áreas de atuação
+├── Differentials.tsx          → diferenciais do escritório
+├── Process.tsx                 → como funciona o primeiro contato
+├── SocialProof.tsx              → depoimentos reais e nota do Google
+├── Faq.tsx                       → perguntas frequentes (acordeão acessível)
+├── FinalCta.tsx                   → chamada final para contato
+├── Footer.tsx                      → contato, endereço e redes sociais
+├── FloatingWhatsapp.tsx             → botão flutuante (mobile)
+├── CtaButton.tsx                     → botão de CTA reutilizável
+├── RatingBadge.tsx                    → selo de avaliação reutilizável
+├── ImagePlaceholder.tsx                → placeholder identificado para fotos pendentes
+└── WhatsappIcon.tsx                     → ícone de marca (não incluído no lucide-react)
+
 lib/
-  site-data.ts    → fonte única de verdade: telefone, endereço, textos, serviços, depoimentos, FAQ
+└── site-data.ts  → fonte única de verdade dos dados do negócio
 ```
 
-## Pontos que precisam de atenção antes de publicar
+## Pendências conhecidas
 
-Estes itens estão sinalizados no código (busca por "Substituir por foto real" e nos comentários) e também constavam no Blueprint como pendências de validação com o cliente:
+Sinalizadas para acompanhamento antes da divulgação oficial da página:
 
-1. **Fotos reais** — há 2 placeholders claramente identificados (`ImagePlaceholder`) no Hero e na seção Sobre, esperando fotos reais do Dr. Silas Freire. Nenhuma foto foi inventada ou usada sem autorização.
-2. **4ª área de atuação** — a ficha do Google mostrava uma área cortada na captura de tela ("Advogado Direit..."). Foi assumida como "Consultoria Jurídica" (com base na bio do Instagram), mas vale confirmar com o cliente.
-3. **Horário de funcionamento completo** — só havia confirmação de "fecha às 17h" em um dia específico; o footer evita afirmar uma grade de horários não confirmada.
-4. **Respostas do FAQ** (preço de consulta, abrangência de atendimento fora de Guarulhos, tempo de retorno) — foram escritas de forma genérica e segura; recomenda-se validar com o cliente antes de publicar.
-5. **Site atual** — a bio do Instagram lista `www.silasfreireadv.com.br`, mas o briefing informou que a empresa não possui site. Vale confirmar antes de decidir o domínio final de publicação.
+- [ ] Substituir as fotos placeholder (`Hero` e `About`) por fotos reais do Dr. Silas Freire
+- [ ] Confirmar a 4ª área de atuação (cortada na ficha original do Google, assumida como "Consultoria Jurídica")
+- [ ] Confirmar horário de funcionamento completo do escritório
+- [ ] Validar as respostas do FAQ (preço de consulta, abrangência de atendimento, tempo médio de retorno) com o cliente
+- [ ] Confirmar domínio final de publicação (`silasfreireadv.com.br`, citado na bio do Instagram, ainda não confirmado como site oficial)
 
-## Stack
+## Licença
 
-- Next.js 14 (App Router)
-- TypeScript
-- Tailwind CSS
-- lucide-react (ícones)
-- Framer Motion (animação de entrada do Hero)
+Projeto de uso privado, desenvolvido para a Silas Freire Advocacia. Não licenciado para reuso público.

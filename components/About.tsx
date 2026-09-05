@@ -19,14 +19,10 @@ export function About() {
             Quem vai cuidar do seu caso?
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-stone">
-            Sou Silas Freire, advogado atuante em Guarulhos-SP. Meu trabalho é
-            simples de explicar: ouvir com atenção, entender o que realmente
-            está em jogo no seu caso e agir com foco até a solução.
+            Dr. Silas Freire, advogado atuante em Guarulhos-SP, sócio e proprietário do escritório de advocacia SILAS FREIRE ADVOCACIA, com atendimento em todo o Brasil nas áreas de Direito do Trabalho, Cível, Família e Criminal.
           </p>
           <p className="mt-4 text-lg leading-relaxed text-stone">
-            É o que os próprios clientes destacam nas avaliações —
-            profissionalismo e dedicação real a cada processo, do início ao
-            fim.
+            Trabalho totalmente pautado pela técnica, profissionalismo e humanidade, ouvindo cada demanda com a atenção e o respeito que o caso merece para agir com foco até a solução. Dedicação real a cada processo que se reflete nas avaliações de casos reais deixadas por nossos clientes no Google.
           </p>
         </div>
       </div>
