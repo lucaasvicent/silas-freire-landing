@@ -88,7 +88,9 @@ export async function POST(req: Request) {
 
   const wantsSummary = (body as { mode?: unknown }).mode === "summary";
 
-  const callModel = (model: string) =>
+  type CallOptions = { model: string; stream: boolean; effort: "low" | "medium" };
+
+  const callModel = ({ model, stream, effort }: CallOptions) =>
     fetch(API_URL, {
       method: "POST",
       headers: {
@@ -104,19 +106,44 @@ export async function POST(req: Request) {
         ],
         temperature: wantsSummary ? 0.2 : 0.5,
         // Modelos de raciocínio gastam tokens "pensando" antes de responder,
-        // por isso o limite é maior e o raciocínio é mantido curto.
+        // por isso o limite é maior.
         max_tokens: isReasoningModel(model) ? 1500 : wantsSummary ? 250 : 400,
         ...(isReasoningModel(model)
-          ? { reasoning_effort: "low", include_reasoning: false }
+          ? { reasoning_effort: effort, include_reasoning: false }
           : {}),
-        stream: !wantsSummary,
+        stream,
       }),
     }).catch(() => null);
 
-  let upstream = await callModel(MODEL);
+  // Resposta completa (sem streaming), usada como segunda tentativa.
+  const complete = async (model: string) => {
+    const res = await callModel({ model, stream: false, effort: "low" });
+    if (!res?.ok) return "";
+    const data = await res.json().catch(() => null);
+    return (data?.choices?.[0]?.message?.content ?? "").trim() as string;
+  };
+
+  // "medium" segue melhor o roteiro da triagem; o resumo é simples.
+  const primary: CallOptions = {
+    model: MODEL,
+    stream: !wantsSummary,
+    effort: wantsSummary ? "low" : "medium",
+  };
+
+  // Plano gratuito: se o modelo principal bater no limite (429), tenta o
+  // reserva; se os dois estiverem no limite, espera o tempo indicado pelo
+  // provedor (até 8s) e tenta o principal de novo.
+  let upstream = await callModel(primary);
   if (upstream?.status === 429 && FALLBACK_MODEL) {
     console.warn(`IA: limite atingido em ${MODEL}, usando ${FALLBACK_MODEL}.`);
-    upstream = await callModel(FALLBACK_MODEL);
+    upstream = await callModel({ ...primary, model: FALLBACK_MODEL, effort: "low" });
+  }
+  if (upstream?.status === 429) {
+    const wait = Number(upstream.headers.get("retry-after"));
+    if (wait > 0 && wait <= 8) {
+      await new Promise((r) => setTimeout(r, wait * 1000));
+      upstream = await callModel(primary);
+    }
   }
 
   if (!upstream || !upstream.ok) {
@@ -134,13 +161,16 @@ export async function POST(req: Request) {
     return jsonError("Assistente indisponível no momento.", 502);
   }
 
+  const retryModel = FALLBACK_MODEL || MODEL;
+
   if (wantsSummary) {
-    const data = await upstream.json();
-    const summary: string = data?.choices?.[0]?.message?.content?.trim() ?? "";
+    const data = await upstream.json().catch(() => null);
+    let summary: string = (data?.choices?.[0]?.message?.content ?? "").trim();
+    if (!summary) summary = await complete(retryModel);
     return Response.json({ summary });
   }
 
-  // Converte o SSE da DeepSeek em um stream de texto puro para o widget.
+  // Converte o SSE do provedor em um stream de texto puro para o widget.
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
   const reader = upstream.body!.getReader();
@@ -148,6 +178,7 @@ export async function POST(req: Request) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       let buffer = "";
+      let sent = false;
       try {
         while (true) {
           const { done, value } = await reader.read();
@@ -164,11 +195,22 @@ export async function POST(req: Request) {
             if (payload === "[DONE]") continue;
             try {
               const delta = JSON.parse(payload)?.choices?.[0]?.delta?.content;
-              if (delta) controller.enqueue(encoder.encode(delta));
+              if (delta) {
+                controller.enqueue(encoder.encode(delta));
+                sent = true;
+              }
             } catch {
               // linha parcial ou keep-alive: ignora
             }
           }
+        }
+
+        // Às vezes o modelo gasta tudo raciocinando e não escreve nada:
+        // tenta mais uma vez, sem streaming, antes de desistir.
+        if (!sent) {
+          console.warn("IA: resposta vazia, tentando novamente.");
+          const text = await complete(retryModel);
+          if (text) controller.enqueue(encoder.encode(text));
         }
       } finally {
         controller.close();

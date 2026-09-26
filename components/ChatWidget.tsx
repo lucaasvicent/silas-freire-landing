@@ -22,9 +22,14 @@ const FALLBACK_ERROR =
 
 const MAX_INPUT = 1000;
 
-// O modelo às vezes devolve markdown; o chat mostra texto puro.
+// O modelo às vezes devolve markdown ou marcadores de template ({{user}});
+// o chat mostra texto puro e sem esses restos.
 function cleanText(text: string) {
-  return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/^#+\s*/gm, "");
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/^#+\s*/gm, "")
+    .replace(/,?\s*\{\{[^}]*\}\}/g, "")
+    .replace(/,?\s*\{\{[^}]*$/, "");
 }
 
 export function ChatWidget() {
