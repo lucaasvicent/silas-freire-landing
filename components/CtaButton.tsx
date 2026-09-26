@@ -6,6 +6,8 @@ type CtaButtonProps = {
   children: React.ReactNode;
   variant?: "solid" | "outline" | "ghost";
   className?: string;
+  /** Identifica o botão no GA (evento whatsapp_click). */
+  ctaLocation?: string;
 };
 
 const variantStyles: Record<string, string> = {
@@ -20,12 +22,14 @@ export function CtaButton({
   children,
   variant = "solid",
   className = "",
+  ctaLocation,
 }: CtaButtonProps) {
   return (
     <Link
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      data-cta={ctaLocation}
       className={`inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3.5 text-[0.95rem] font-medium transition-colors duration-200 ${variantStyles[variant]} ${className}`}
     >
       <WhatsappIcon className="h-4 w-4" />

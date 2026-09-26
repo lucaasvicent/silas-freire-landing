@@ -22,6 +22,7 @@ export function Services() {
               href={buildWhatsappLink(whatsappMessages.services)}
               target="_blank"
               rel="noopener noreferrer"
+              data-cta={`servicos: ${service.title}`}
               className={`group flex flex-col justify-between gap-4 border-b border-ink/10 py-8 pr-6 transition-colors hover:bg-ink/[0.02] md:py-10 ${
                 i % 2 === 0 ? "md:border-r md:pr-10" : "md:pl-10"
               }`}

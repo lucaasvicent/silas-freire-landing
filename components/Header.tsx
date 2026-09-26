@@ -38,6 +38,7 @@ export function Header() {
           <CtaButton
             href={buildWhatsappLink(whatsappMessages.default)}
             className="!px-5 !py-2.5 text-sm"
+            ctaLocation="header"
           >
             WhatsApp
           </CtaButton>
@@ -77,6 +78,7 @@ export function Header() {
           <CtaButton
             href={buildWhatsappLink(whatsappMessages.default)}
             className="mt-5 w-full"
+            ctaLocation="menu_mobile"
           >
             Falar no WhatsApp
           </CtaButton>

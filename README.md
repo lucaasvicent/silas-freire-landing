@@ -42,6 +42,9 @@ O projeto nasceu de um processo de 3 etapas — análise estratégica do negóci
 
 - Botão de WhatsApp com link `wa.me` e mensagem pré-preenchida diferente por seção (hero, serviços, CTA final)
 - Botão flutuante de WhatsApp fixo no mobile
+- Assistente de IA (DeepSeek) para triagem do caso, que encaminha para o WhatsApp com um resumo da conversa
+- Vercel Analytics (visitas e origem do tráfego; ative em *Analytics* no painel da Vercel)
+- Google Analytics 4 com eventos de clique no WhatsApp (por posição do botão) e de uso do assistente
 - Seção de FAQ em acordeão, acessível via teclado (`aria-expanded`, `aria-controls`)
 - Menu mobile responsivo com navegação por âncoras
 - SEO configurado: `metadata`, Open Graph, `robots.ts` e `sitemap.ts` gerados automaticamente pelo App Router
@@ -62,6 +65,35 @@ npm run dev
 Acesse [http://localhost:3000](http://localhost:3000)
 
 > O `next/font/google` baixa as fontes (Fraunces e Work Sans) durante o `npm run build`/`npm run dev` — é necessário ter internet ativa nesse momento. Depois de compiladas, as fontes ficam self-hosted, sem chamada externa em runtime.
+
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env.local` (e cadastre as mesmas variáveis na Vercel):
+
+| Variável | Para quê |
+| --- | --- |
+| `AI_API_KEY` | Chave do Groq (gratuita, em console.groq.com/keys). Só no servidor. Sem ela, o chat responde com um aviso e encaminha para o WhatsApp. |
+| `AI_API_URL` | Endpoint do provedor. Padrão: Groq. Qualquer API compatível com OpenAI funciona. |
+| `AI_MODEL` | Modelo principal. Padrão: `openai/gpt-oss-120b`. |
+| `AI_FALLBACK_MODEL` | Opcional. Modelo usado se o principal atingir o limite gratuito (ex.: `openai/gpt-oss-20b`). |
+| `NEXT_PUBLIC_GA_ID` | ID de medição do GA4 (`G-XXXXXXXXXX`). Vazio = GA desativado. |
+
+## Assistente de IA (triagem)
+
+- `components/ChatWidget.tsx` → widget flutuante; ao final, gera um resumo da conversa e abre o WhatsApp com ele.
+- `app/api/chat/route.ts` → chama o provedor de IA (streaming), valida entrada e aplica limite por IP.
+- `lib/chat-prompt.ts` → instruções da IA. Os dados do escritório vêm de `lib/site-data.ts`.
+
+## Eventos do GA4
+
+| Evento | Parâmetros | Quando |
+| --- | --- | --- |
+| `whatsapp_click` | `cta_location` (`header`, `hero`, `servicos: ...`, `cta_final`, `footer`, `flutuante`, `menu_mobile`, `chat_ia`) | Qualquer clique que leva ao WhatsApp |
+| `chat_open` | — | Abriu o assistente |
+| `chat_message_sent` | `message_index` | Enviou mensagem no chat |
+| `chat_error` | `reason` | A IA não conseguiu responder |
+
+Marque `whatsapp_click` como **evento principal (conversão)** no GA4 em *Administrador → Eventos*.
 
 ## Estrutura do projeto
 

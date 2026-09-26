@@ -55,7 +55,10 @@ export function Hero() {
             variants={item}
             className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center"
           >
-            <CtaButton href={buildWhatsappLink(whatsappMessages.default)}>
+            <CtaButton
+              href={buildWhatsappLink(whatsappMessages.default)}
+              ctaLocation="hero"
+            >
               Falar agora no WhatsApp
             </CtaButton>
             <a

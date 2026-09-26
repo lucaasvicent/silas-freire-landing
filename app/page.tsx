@@ -9,6 +9,7 @@ import { Faq } from "@/components/Faq";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { FloatingWhatsapp } from "@/components/FloatingWhatsapp";
+import { ChatWidget } from "@/components/ChatWidget";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       </main>
       <Footer />
       <FloatingWhatsapp />
+      <ChatWidget />
     </>
   );
 }

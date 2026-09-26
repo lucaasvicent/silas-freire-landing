@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer id="contato" className="bg-ink-soft py-16 text-ivory/80">
+    <footer id="contato" className="bg-ink-soft pb-40 pt-16 text-ivory/80 lg:pb-16">
       <div className="container-page grid gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <p className="font-display text-xl text-ivory">
@@ -25,6 +25,7 @@ export function Footer() {
             href={buildWhatsappLink(whatsappMessages.default)}
             target="_blank"
             rel="noopener noreferrer"
+            data-cta="footer"
             className="flex items-center gap-2.5 transition-colors hover:text-ivory"
           >
             <Phone
@@ -80,31 +81,32 @@ export function Footer() {
           </p>
         </div>
       </div>
-      <div className="container-page mt-12 border-t border-ivory/10 pt-3">
-        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-center">
+      <div className="container-page mt-12 border-t border-ivory/10 pt-6">
+        <div className="flex flex-col items-center justify-between gap-5 sm:flex-row">
           <p className="text-center text-xs text-ivory/40 sm:text-left">
             © {new Date().getFullYear()} Silas Freire Advocacia. Todos os
             direitos reservados.
           </p>
-          <div className="flex shrink-0 items-center justify-center">
-            <Link href="https://www.linkedin.com/in/lucas-vicente0408/" target="_blank" rel="noopener noreferrer">
-              <Image
-                alt="Logo Silas Freire Advocacia"
-                src="/images/logoMe.png"
-                width={700}
-                height={100}
-                priority
-                className="
-                h-auto
-                w-64
-                object-contain
-                sm:w-72
-                md:w-80
-                lg:w-96
-              "
-              />
-            </Link>
-          </div>
+
+          {/* Assinatura do desenvolvedor */}
+          <Link
+            href="https://www.linkedin.com/in/lucas-vicente0408/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Site desenvolvido por Lucas Vicente, Web developer (LinkedIn)"
+            className="group flex shrink-0 items-center gap-3 opacity-60 transition-opacity duration-200 hover:opacity-100"
+          >
+            <span className="text-[0.7rem] uppercase tracking-[0.14em] text-ivory/70">
+              Desenvolvido por
+            </span>
+            <Image
+              src="/images/assinatura-lucas-vicente.png"
+              alt=""
+              width={241}
+              height={71}
+              className="h-9 w-auto"
+            />
+          </Link>
         </div>
       </div>
     </footer>

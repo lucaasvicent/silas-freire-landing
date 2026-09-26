@@ -18,6 +18,7 @@ export function FinalCta() {
         <CtaButton
           href={buildWhatsappLink(whatsappMessages.final)}
           className="shrink-0"
+          ctaLocation="cta_final"
         >
           Falar no WhatsApp agora
         </CtaButton>

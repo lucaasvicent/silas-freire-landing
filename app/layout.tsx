@@ -1,3 +1,6 @@
+import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { WhatsappClickTracker } from "@/components/WhatsappClickTracker";
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans } from "next/font/google";
 import "./globals.css";
@@ -50,7 +53,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={`${fraunces.variable} ${workSans.variable}`}>
-      <body className="font-body antialiased">{children}</body>
+      <body className="font-body antialiased">
+        {children}
+        <WhatsappClickTracker />
+        <GoogleAnalytics />
+        <Analytics />
+      </body>
     </html>
   );
 }
